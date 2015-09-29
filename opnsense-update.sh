@@ -151,9 +151,11 @@ fi
 
 if [ -n "${DO_PKGS}" ]; then
 	pkg update ${DO_FORCE}
+	secadm flush
 	pkg upgrade -y ${DO_FORCE}
 	pkg autoremove -y
 	pkg clean -y
+	secadm set
 	if [ -n "${DO_BASE}${DO_KERNEL}" ]; then
 		# script may have changed, relaunch...
 		opnsense-update ${DO_BASE} ${DO_KERNEL} \
