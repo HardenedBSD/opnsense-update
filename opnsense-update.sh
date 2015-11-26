@@ -152,8 +152,8 @@ if [ -z "${RELEASE}" ]; then
 
 	if [ ${ARCH} = "amd64" ]; then
 		OBSOLETESHA=""
-		KERNELSHA="e1283705c6c6b542a40844ba83c6a28b055e79a5bca61e346a0254823b59c361"
-		BASESHA="f725f76d48d2a5888cc68818fbfe737573b3e6a1b96b03113b1f7260fc09db9c"
+		KERNELSHA="2fd8c547b1932b40a966914dc22c53c8561816410e1c8a49f213ac0867b43c48"
+		BASESHA="aa695fc17f8b1c8edcf00c2afdc25015c97c301d2cae71697f80d653e7d2c770"
 	elif [ ${ARCH} = "i386" ]; then
 		echo "i386 is unsupported." >&2
 		exit 1
