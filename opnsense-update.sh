@@ -35,28 +35,11 @@ fi
 MARKER="/usr/local/opnsense/version/opnsense-update"
 ORIGIN="/usr/local/etc/pkg/repos/origin.conf"
 MIRROR="http://opnsense.hardenedbsd.org/"
-VERSION="hbsd-exp-06"
+VERSION="hbsd-exp-07"
+
+WORKPREFIX="/tmp/opnsense-update"
+MIRROR="http://pkg.opnsense.org"
 ARCH=$(uname -m)
-
-# clean up old stale working directories
-rm -rf /tmp/opnsense-update.*
-
-# migrate old marker files
-for SUB in kernel base; do
-	({
-		CURR=opnsense-update.${SUB}
-		PREV=os-update.${SUB}
-
-		cd $(dirname ${MARKER})
-
-		if [ -e ${PREV} ]; then
-			if [ ! -e ${CURR} ]; then
-				mv ${PREV} ${CURR}
-				ln -s ${CURR} ${PREV}
-			fi
-		fi
-	})
-done
 
 INSTALLED_BASE=
 if [ -f ${MARKER}.base ]; then
@@ -86,10 +69,8 @@ while getopts bcfkm:n:pr:sv OPT; do
 		# -c only ever checks the embedded version string
 		if [ "${VERSION}-${ARCH}" = "${INSTALLED_KERNEL}" -a \
 		    "${VERSION}-${ARCH}" = "${INSTALLED_BASE}" ]; then
-			echo "Your system is up to date."
 			exit 1
 		fi
-		echo "There are updates available."
 		exit 0
 		;;
 	f)
@@ -121,7 +102,7 @@ while getopts bcfkm:n:pr:sv OPT; do
 		exit 0
 		;;
 	*)
-		echo "Usage: opnsense-update [-bcfkpsv] [-m mirror] [-r release]" >&2
+		echo "Usage: opnsense-update [-bcfkpsv] [-m mirror] [-n flavour] [-r release]" >&2
 		exit 1
 		;;
 	esac
@@ -171,8 +152,8 @@ if [ -z "${RELEASE}" ]; then
 
 	if [ ${ARCH} = "amd64" ]; then
 		OBSOLETESHA=""
-		KERNELSHA=""
-		BASESHA=""
+		KERNELSHA="e1283705c6c6b542a40844ba83c6a28b055e79a5bca61e346a0254823b59c361"
+		BASESHA="f725f76d48d2a5888cc68818fbfe737573b3e6a1b96b03113b1f7260fc09db9c"
 	elif [ ${ARCH} = "i386" ]; then
 		echo "i386 is unsupported." >&2
 		exit 1
@@ -210,7 +191,7 @@ echo "!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!"
 OBSOLETESET=base-${RELEASE}-${ARCH}.obsolete
 KERNELSET=kernel-${RELEASE}-${ARCH}.txz
 BASESET=base-${RELEASE}-${ARCH}.txz
-WORKDIR=/tmp/opnsense-update.${$}
+WORKDIR=${WORKPREFIX}/${$}
 KERNELDIR=/boot/kernel
 
 fetch_set()
